@@ -4,7 +4,9 @@
 
 > A production-oriented Edge IoT platform demonstrating how embedded hardware, edge computing, Docker, and mechanical design can be integrated into a complete monitoring solution.
 
----
+<img width="2700" height="2160" alt="Untitled Project" src="https://github.com/user-attachments/assets/9ef67a04-49c2-4fd2-8ce8-bd2d0078b03f" />
+
+
 
 ## 📌 Overview
 
