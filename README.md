@@ -46,7 +46,7 @@ ESP32 Sensor Node
  Raspberry Pi Gateway
         │
         ▼
- Python Data Service
+ Php Data Service
         │
         ▼
      MySQL Database
@@ -72,7 +72,7 @@ ESP32 Sensor Node
 * Raspberry Pi
 * Mosquitto MQTT Broker
 * Docker
-* Python
+* Php
 
 ---
 
