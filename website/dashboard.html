@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script>
+        /* Apply saved theme before first paint to avoid a flash */
+        (function () {
+            var t = localStorage.getItem('gh-theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+
+        /* Guard: bounce back to the login page if not signed in this session */
+        if (sessionStorage.getItem('gh-auth') !== '1') {
+            window.location.replace('index.html');
+        }
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green House | Smart Monitoring</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ===================== TOP BAR ===================== -->
+    <header class="topbar">
+        <div class="brand">
+            <img src="photos/logo.png" alt="logo" class="logo">
+            <div class="brand-text">
+                <h1 class="header">Smart Greenhouse</h1>
+                <h3 class="header3">Powered By <span class="mlj">MLJ</span></h3>
+            </div>
+        </div>
+
+        <div class="status-cluster">
+            <!-- Live clock and date -->
+            <div class="clock-box">
+                <span id="liveTime">--:--:--</span>
+                <span id="liveDate">----/--/--</span>
+            </div>
+
+            <!-- MQTT connection status -->
+            <div class="mqtt-box" id="mqttBox">
+                <span class="mqtt-dot" id="mqttDot"></span>
+                <span id="mqttText">Connecting...</span>
+            </div>
+
+            <!-- Dark / light mode toggle -->
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark or light mode">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+            </button>
+
+            <!-- Signed-in user + logout -->
+            <button class="logout-btn" id="logoutBtn" title="Sign out">
+                <span id="currentUser"></span> Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- ===================== MAIN CONTROL BOX ===================== -->
+    <section class="mainbox">
+        <h3>All Lines <span class="tag">General</span></h3>
+        <div class="field">
+            <label>Total Current</label>
+            <input type="number" id="totalCurrent" readonly>
+            <span class="unit">A</span>
+        </div>
+        <div class="field-grid">
+            <div class="field">
+                <label>Temperature</label>
+                <input type="number" id="maintemp" readonly>
+                <span class="unit">°C</span>
+            </div>
+            <div class="field">
+                <label>Humidity</label>
+                <input type="number" id="mainhemu" readonly>
+                <span class="unit">%</span>
+            </div>
+            <div class="field">
+                <label>Pressure</label>
+                <input type="text" id="barometer" readonly>
+                <span class="unit">Pa</span>
+            </div>
+            <div class="field">
+                <label>Fan Status</label>
+                <input type="text" id="fan" readonly>
+            </div>
+        </div>
+        <div class="lamp-control">
+            <p>Lamp of the greenhouse</p>
+            <button class="lampbutton" id="lampBtn" data-state="off">ON/OFF</button>
+        </div>
+    </section>
+
+    <!-- ===================== ROOM / LINE STATUS OVERVIEW ===================== -->
+    <section class="rooms-status">
+        <h2 class="section-title">Greenhouse Lines Status</h2>
+        <div class="rooms-grid" id="roomsGrid">
+            <!-- These cards are also rebuilt dynamically by JS; static sample below -->
+            <div class="room-card healthy" data-line="1">
+                <div class="room-card-header">
+                    <span class="room-name">Line 1</span>
+                    <span class="room-led"></span>
+                </div>
+                <p class="room-state-text">All sensors healthy</p>
+            </div>
+            <div class="room-card warning" data-line="2">
+                <div class="room-card-header">
+                    <span class="room-name">Line 2</span>
+                    <span class="room-led"></span>
+                </div>
+                <p class="room-state-text">Sensor needs checking</p>
+            </div>
+            <div class="room-card error" data-line="3">
+                <div class="room-card-header">
+                    <span class="room-name">Line 3</span>
+                    <span class="room-led"></span>
+                </div>
+                <p class="room-state-text">Sensor offline</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== LINE 1 DETAIL BOX ===================== -->
+    <section class="box" data-line-box="1">
+        <h3>Line 1</h3>
+        <div class="field-grid">
+            <div class="field">
+                <label>Soil Humidity</label>
+                <input type="number" id="soilhemu1" readonly>
+                <span class="unit">%</span>
+            </div>
+            <div class="field">
+                <label>Pump Status</label>
+                <input type="text" id="pumpstatus1" readonly>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CHART FILTER BAR ===================== -->
+    <section class="chart-filter">
+        <h2 class="section-title">Charts</h2>
+        <div class="filter-controls">
+            <label for="lineSelect">Line:</label>
+            <select id="lineSelect">
+                <option value="main">All Lines</option>
+                <option value="1">Line 1</option>
+                <option value="2">Line 2</option>
+                <option value="3">Line 3</option>
+            </select>
+
+            <label for="metricSelect">Metric:</label>
+            <select id="metricSelect">
+                <!-- Options are populated dynamically by script.js based on the selected line,
+                     since "All Lines" and individual lines expose different metrics -->
+            </select>
+
+            <label for="dateFilter">Range:</label>
+            <select id="dateFilter">
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="week">Last 7 days</option>
+                <option value="month">Last 30 days</option>
+                <option value="custom">Custom date</option>
+            </select>
+            <input type="date" id="customDate" style="display:none;">
+
+            <button id="applyFilterBtn">Apply Filter</button>
+        </div>
+        <p class="filter-hint" id="filterHint"></p>
+    </section>
+
+    <!-- ===================== CHARTS ===================== -->
+    <!-- Charts are lazy-loaded: they only render when the user clicks on them -->
+    <section class="charts-grid">
+
+        <div class="chart-card" data-chart-key="line">
+            <h4>Trend (Line Chart)</h4>
+            <div class="chart-placeholder" data-placeholder="line">
+                <span class="chart-icon">📈</span>
+                <p>Click to display chart</p>
+            </div>
+            <div class="chart-canvas-wrap" data-wrap="line" style="display:none;">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card" data-chart-key="bar">
+            <h4>Comparison (Bar Chart)</h4>
+            <div class="chart-placeholder" data-placeholder="bar">
+                <span class="chart-icon">📊</span>
+                <p>Click to display chart</p>
+            </div>
+            <div class="chart-canvas-wrap" data-wrap="bar" style="display:none;">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card" data-chart-key="pie">
+            <h4>Share (Pie Chart)</h4>
+            <div class="chart-placeholder" data-placeholder="pie">
+                <span class="chart-icon">🥧</span>
+                <p>Click to display chart</p>
+            </div>
+            <div class="chart-canvas-wrap" data-wrap="pie" style="display:none;">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <footer class="footer">
+        <p>&copy; <span id="footerYear"></span> Smart Greenhouse — Powered By MLJ</p>
+    </footer>
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="theme.js"></script>
+    <script src="dashboard-auth.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

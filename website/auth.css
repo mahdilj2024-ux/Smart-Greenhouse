@@ -1,0 +1,171 @@
+/* ============================================================
+   Login page — styling specific to the sign-in screen.
+   Shares color tokens, topbar, and fadeUp/pulseDot keyframes
+   with style.css so it stays visually consistent with the
+   dashboard in both dark and light mode.
+   ============================================================ */
+
+.auth-body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 34px 32px 28px;
+    box-shadow: var(--shadow);
+    animation: fadeUp .6s ease both;
+}
+
+.auth-card.shake {
+    animation: shakeCard .4s ease;
+}
+
+@keyframes shakeCard {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+}
+
+.auth-card-head {
+    margin-bottom: 22px;
+}
+
+.auth-eyebrow {
+    display: inline-block;
+    font-size: .7rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    background: rgba(0, 210, 255, 0.12);
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+.auth-card-head h2 {
+    margin: 0 0 8px;
+    font-size: 1.4rem;
+    color: var(--text-main);
+}
+
+.auth-subtext {
+    margin: 0;
+    font-size: .85rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.auth-form .field input {
+    width: 100%;
+}
+
+.auth-error {
+    margin: -4px 0 0;
+    font-size: .8rem;
+    color: var(--danger);
+    min-height: 1.1em;
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+.auth-error.show {
+    opacity: 1;
+}
+
+.auth-submit {
+    cursor: pointer;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    font-size: .95rem;
+    background: linear-gradient(135deg, var(--accent), #039487);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(0, 184, 148, 0.35);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.auth-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 184, 148, 0.45);
+}
+
+.auth-submit:active {
+    transform: scale(.97);
+}
+
+.auth-note {
+    margin: 18px 0 0;
+    font-size: .75rem;
+    color: var(--text-dim);
+    text-align: center;
+}
+
+/* ---------- Ambient line-status preview (signature element) ---------- */
+.auth-lines {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.auth-line-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .72rem;
+    color: var(--text-dim);
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.auth-line-chip i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    background: var(--text-dim);
+}
+
+.auth-line-chip.healthy i { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulseDot 2s infinite; }
+.auth-line-chip.warning i { background: var(--warning); box-shadow: 0 0 8px var(--warning); animation: pulseDot 1.2s infinite; }
+.auth-line-chip.error i { background: var(--danger); box-shadow: 0 0 8px var(--danger); animation: pulseDot .8s infinite; }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 26px 20px 22px;
+    }
+
+    .auth-lines {
+        flex-wrap: wrap;
+    }
+}

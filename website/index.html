@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script>
+        /* Apply saved theme before first paint to avoid a flash */
+        (function () {
+            var t = localStorage.getItem('gh-theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Greenhouse | Sign In</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="auth-body">
+
+    <!-- ===================== TOP BAR ===================== -->
+    <header class="topbar">
+        <div class="brand">
+            <img src="photos/logo.png" alt="logo" class="logo">
+            <div class="brand-text">
+                <h1 class="header">Smart Greenhouse</h1>
+                <h3 class="header3">Powered By <span class="mlj">MLJ</span></h3>
+            </div>
+        </div>
+
+        <div class="status-cluster">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark or light mode">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===================== LOGIN ===================== -->
+    <main class="auth-wrap">
+        <section class="auth-card" id="loginCard">
+            <div class="auth-card-head">
+                <span class="auth-eyebrow">Restricted Access</span>
+                <h2>Sign in to your greenhouse</h2>
+                <p class="auth-subtext">Enter your credentials to view live sensor data and controls.</p>
+            </div>
+
+            <form id="loginForm" class="auth-form" autocomplete="off">
+                <div class="field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" autocomplete="username" required>
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+                </div>
+
+                <p class="auth-error" id="loginError"></p>
+
+                <button type="submit" class="auth-submit">Sign In</button>
+            </form>
+
+            <p class="auth-note">Authorized personnel only.</p>
+
+            <!-- Ambient preview of the three greenhouse lines, echoes the dashboard's status cards -->
+            <div class="auth-lines">
+                <span class="auth-line-chip healthy"><i></i>Line 1</span>
+                <span class="auth-line-chip warning"><i></i>Line 2</span>
+                <span class="auth-line-chip error"><i></i>Line 3</span>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span id="footerYear"></span> Smart Greenhouse — Powered By MLJ</p>
+    </footer>
+
+    <script src="theme.js"></script>
+    <script src="login.js"></script>
+</body>
+
+</html>
